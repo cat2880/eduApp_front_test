@@ -1,9 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BookOpen, Search, User, Award, Loader2 } from "lucide-react";
+import { BookOpen, Search, User, Award, Loader2, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 
 const navigationItems = [
@@ -35,7 +33,7 @@ const navigationItems = [
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, loading, error, debugInfo } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-telegram">
@@ -59,11 +57,36 @@ const Index = () => {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-red-500">Ошибка авторизации</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-red-500">
+                <AlertCircle className="h-5 w-5" />
+                <p className="text-sm font-semibold">Ошибка авторизации</p>
+              </div>
+              {error && (
+                <p className="text-xs text-red-400">{error}</p>
+              )}
+            </div>
           )}
         </div>
       </header>
 
+      {/* Debug Info */}
+      {!user && !loading && (
+        <div className="max-w-[420px] mx-auto px-4 py-4">
+          <Card className="bg-yellow-50 border-yellow-200">
+            <CardContent className="p-4 space-y-2 text-xs">
+              <p className="font-semibold text-yellow-900">🔍 Отладочная информация:</p>
+              <div className="space-y-1 text-yellow-800">
+                <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+                <p><strong>initData найден:</strong> {debugInfo.hasInitData ? "✅ Да" : "❌ Нет"}</p>
+                <p><strong>initData длина:</strong> {debugInfo.initDataLength}</p>
+                <p><strong>Запрос отправлен:</strong> {debugInfo.requestSent ? "✅ Да" : "❌ Нет"}</p>
+                <p><strong>HTTP статус:</strong> {debugInfo.responseStatus || "не получен"}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="max-w-[420px] mx-auto px-4 py-8">
