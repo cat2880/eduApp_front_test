@@ -3,7 +3,13 @@ import App from "./App.tsx";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
 
-window.Telegram?.WebApp?.ready();
-window.Telegram?.WebApp?.expand();
+if (window.Telegram?.WebApp) {
+  window.Telegram.WebApp.ready();
+  window.Telegram.WebApp.expand();
+}
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <AuthProvider>
+    <App />
+  </AuthProvider>
+);
