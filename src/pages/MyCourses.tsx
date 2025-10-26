@@ -57,7 +57,7 @@ const MyCourses = () => {
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <GraduationCap className="h-4 w-4" />
-                  <span>{course.instructor_name || "Преподаватель"}</span>
+                  <span>{course.instructor_username ? `@${course.instructor_username}` : "Преподаватель"}</span>
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">

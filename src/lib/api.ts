@@ -13,9 +13,10 @@ export interface Course {
   id: string;
   title: string;
   description: string;
-  instructor: User;
+  instructor_username: string;
   createdAt?: string;
   updatedAt?: string;
+  cover?: string;
   modules?: CourseModule[];
 }
 

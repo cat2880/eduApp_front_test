@@ -74,9 +74,9 @@ const SearchCourses = () => {
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <GraduationCap className="h-4 w-4" />
-                    <span>{course.instructor_name || "Преподаватель"}</span>
+                    <span>{course.instructor_username ? `@${course.instructor_username}` : "Преподаватель"}</span>
                   </div>
-                  <span className="text-muted-foreground">{course.students || 0} студентов</span>
+                  
                 </div>
                 <Button className="w-full rounded-xl" size="sm">
                   Записаться
