@@ -58,98 +58,106 @@ export interface LessonCreateRequest {
   orderIndex: number;
 }
 
-// export const loginWithTelegram = async (initData: string) => {
-//   const response = await fetch(`${API_BASE_URL}/auth/telegram`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ initData }),
-//   });
-
-//   if (!response.ok) {
-//     const err = await response.json().catch(() => ({}));
-//     throw new Error(err.error || "Ошибка Telegram авторизации");
-//   }
-
-//   return response.json(); // { user, token }
-// };
-
-// ============= USERS =============
-export const getUsers = async (): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/users`);
-  if (!response.ok) throw new Error("Failed to fetch users");
-  return response.json();
+const getAuthToken = (): string | null => {
+  return localStorage.getItem("jwt");
 };
 
-export const getUserById = async (id: number): Promise<User> => {
-  const response = await fetch(`${API_BASE_URL}/api/users/${id}`);
-  if (!response.ok) throw new Error("Failed to fetch user");
-  return response.json();
+const getAuthHeaders = (isPost: boolean = false) => {
+  const token = getAuthToken();
+  const headers: HeadersInit = {};
+  
+  if (isPost) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
 };
 
-// ============= COURSES =============
 export const getCourses = async (): Promise<Course[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/courses`);
+  const response = await fetch(`${API_BASE_URL}/api/courses`, {
+    headers: getAuthHeaders(),
+  });
+
   if (!response.ok) throw new Error("Failed to fetch courses");
   return response.json();
 };
 
-export const getCourse = async (id: string): Promise<Course> => {
-  const response = await fetch(`${API_BASE_URL}/api/courses/${id}`);
-  if (!response.ok) throw new Error("Failed to fetch course");
-  return response.json();
-};
 
-export const createCourse = async (data: CourseCreateRequest): Promise<Course> => {
-  const response = await fetch(`${API_BASE_URL}/api/courses`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!response.ok) throw new Error("Failed to create course");
-  return response.json();
-};
+// // ============= USERS =============
+// export const getUsers = async (): Promise<User[]> => {
+//   const response = await fetch(`${API_BASE_URL}/api/users`);
+//   if (!response.ok) throw new Error("Failed to fetch users");
+//   return response.json();
+// };
 
-// ============= MODULES =============
-export const getCourseModules = async (courseId: string): Promise<CourseModule[]> => {
-  const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}/modules`);
-  if (!response.ok) throw new Error("Failed to fetch modules");
-  return response.json();
-};
+// export const getUserById = async (id: number): Promise<User> => {
+//   const response = await fetch(`${API_BASE_URL}/api/users/${id}`);
+//   if (!response.ok) throw new Error("Failed to fetch user");
+//   return response.json();
+// };
 
-export const createModule = async (
-  courseId: string, 
-  data: ModuleCreateRequest
-): Promise<CourseModule> => {
-  const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}/modules`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!response.ok) throw new Error("Failed to create module");
-  return response.json();
-};
 
-// ============= LESSONS =============
-export const getModuleLessons = async (moduleId: string): Promise<CourseLesson[]> => {
-  // ИСПРАВЛЕНО: добавлен /api в начало
-  const response = await fetch(`${API_BASE_URL}/api/modules/${moduleId}/lessons`);
-  if (!response.ok) throw new Error("Failed to fetch lessons");
-  return response.json();
-};
 
-export const createLesson = async (
-  moduleId: string, 
-  data: LessonCreateRequest
-): Promise<CourseLesson> => {
-  // ИСПРАВЛЕНО: добавлен /api в начало
-  const response = await fetch(`${API_BASE_URL}/api/modules/${moduleId}/lessons`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!response.ok) throw new Error("Failed to create lesson");
-  return response.json();
-};
+
+// export const getCourse = async (id: string): Promise<Course> => {
+//   const response = await fetch(`${API_BASE_URL}/api/courses/${id}`);
+//   if (!response.ok) throw new Error("Failed to fetch course");
+//   return response.json();
+// };
+
+// export const createCourse = async (data: CourseCreateRequest): Promise<Course> => {
+//   const response = await fetch(`${API_BASE_URL}/api/courses`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(data),
+//   });
+//   if (!response.ok) throw new Error("Failed to create course");
+//   return response.json();
+// };
+
+// // ============= MODULES =============
+// export const getCourseModules = async (courseId: string): Promise<CourseModule[]> => {
+//   const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}/modules`);
+//   if (!response.ok) throw new Error("Failed to fetch modules");
+//   return response.json();
+// };
+
+// export const createModule = async (
+//   courseId: string, 
+//   data: ModuleCreateRequest
+// ): Promise<CourseModule> => {
+//   const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}/modules`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(data),
+//   });
+//   if (!response.ok) throw new Error("Failed to create module");
+//   return response.json();
+// };
+
+// // ============= LESSONS =============
+// export const getModuleLessons = async (moduleId: string): Promise<CourseLesson[]> => {
+//   // ИСПРАВЛЕНО: добавлен /api в начало
+//   const response = await fetch(`${API_BASE_URL}/api/modules/${moduleId}/lessons`);
+//   if (!response.ok) throw new Error("Failed to fetch lessons");
+//   return response.json();
+// };
+
+// export const createLesson = async (
+//   moduleId: string, 
+//   data: LessonCreateRequest
+// ): Promise<CourseLesson> => {
+//   const response = await fetch(`${API_BASE_URL}/api/modules/${moduleId}/lessons`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(data),
+//   });
+//   if (!response.ok) throw new Error("Failed to create lesson");
+//   return response.json();
+// };
 
 // // ============= TELEGRAM AUTH =============
 // export interface TelegramAuthData {
